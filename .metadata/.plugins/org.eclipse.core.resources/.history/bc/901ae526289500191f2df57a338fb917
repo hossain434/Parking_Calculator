@@ -1,0 +1,83 @@
+package parking_calculator;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertThat;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.gargoylesoftware.htmlunit.javascript.host.Console;
+import com.opencsv.CSVReader;
+import java.util.List;
+import java.util.Objects;
+
+public class ShortTermParking {
+
+	private WebDriver driver;
+	PageObjects pageObjects;
+	CSVReader csvReader;
+	private static final String SAMPLE_CSV_FILE_PATH = "C:\\Users\\ahoss1\\Desktop\\Parking_Calculator\\parking_calculator\\parking_calculator.csv";
+
+	@SuppressWarnings("deprecation")
+	@BeforeClass
+	public void beforeTest() throws IOException {
+		String path = System.getProperty("user.dir");
+		//Reader reader = Files.newBufferedReader(Paths.get(SAMPLE_CSV_FILE_PATH));
+		//csvReader = new CSVReader(reader);
+		csvReader = new CSVReader(new FileReader(SAMPLE_CSV_FILE_PATH), ',', '"', 1);
+		System.setProperty("webdriver.chrome.driver",path + "\\chromedriver\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.navigate().to("http://adam.goucher.ca/parkcalc");
+		// Initialize Page
+		pageObjects = PageFactory.initElements(driver, PageObjects.class);
+
+	}
+	@Test(dataProvider = "getData")
+	
+	public void shortTermParking(String EntryDate, String EntryTime, String LeavingDate, String LeavingTime) throws InterruptedException {
+	pageObjects.EntryTime(EntryTime);
+	pageObjects.EntryDate(EntryDate);
+	pageObjects.ExitTime(LeavingTime);
+	pageObjects.ExitDate(LeavingDate);
+	Thread.sleep(1000);
+	pageObjects.Calculate();
+	System.out.println(LeavingDate);
+	String actual = EntryDate;
+	String txt=pageObjects.GetText();
+	 assertThat(actual).isNotNull();
+	}	
+	@DataProvider(name = "getData")
+	public Object[][] getData() throws Exception {
+
+		List<String[]> records = csvReader.readAll();
+
+		Object[][] array = null;
+
+		for (int i = 0; i < records.size(); i++) {
+
+			Object[] row = records.get(i);
+			if (Objects.isNull(array)) {
+				array = new Object[records.size()][row.length];
+			}
+			array[i][0] = row[0];
+			array[i][1] = row[1];
+			array[i][2] = row[2];
+			array[i][3] = row[3];			
+		}
+		return array;
+	}
+
+	 
+	  @AfterClass 
+	  public void afterTest() {
+	  driver.quit(); }
+}

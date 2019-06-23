@@ -1,0 +1,44 @@
+package parking_calculator;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.Test;
+
+public class ShortTermParking {
+
+		private WebDriver driver;
+		PageObjects pageObjects;
+
+		@BeforeClass
+		public void beforeTest() {
+
+			System.setProperty("webdriver.chrome.driver", "C:\\Users\\ahoss1\\Desktop\\Parking_Calculator\\parking_calculator\\chromedriver\\chromedriver.exe");
+			driver = new ChromeDriver();
+			driver.navigate().to("http://adam.goucher.ca/parkcalc");
+			// Initialize Login Page
+			pageObjects = PageFactory.initElements(driver, PageObjects.class);
+
+		}
+
+  @Test 
+  public void LoginTest() throws InterruptedException {
+  
+  // Enter user name loginPage.EnterUserName("arf"); // Enter Password
+  loginPage.EnterPassword("arf"); // Click Login Button
+  loginPage.ClickLoginButton(); }
+  
+  @Test 
+  public void LogoutTest() { // Click Logout button
+  loginPage.ClickLogoutButton(); }
+  
+  @AfterClass 
+  public void afterTest() { // Close the browser driver.close();
+  driver.quit(); }
+  
+  }
+  
+  
+ 

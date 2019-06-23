@@ -1,0 +1,93 @@
+package parking_calculator;
+
+import java.io.IOException;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.support.PageFactory;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+import com.opencsv.CSVReader;
+import java.io.Reader;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.TimeUnit;
+
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.Keys;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Actions;
+import org.testng.annotations.AfterClass;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.DataProvider;
+import org.testng.annotations.Test;
+
+import com.opencsv.CSVReader;
+public class ShortTermParking {
+
+	private WebDriver driver;
+	PageObjects pageObjects;
+	CSVReader csvReader;
+	private static final String SAMPLE_CSV_FILE_PATH = "C:\\Users\\ahoss1\\Desktop\\Parking_Calculator\\parking_calculator\\parking_calculator.csv";
+
+	@BeforeClass
+	public void beforeTest() throws IOException {
+		Reader reader = Files.newBufferedReader(Paths.get(SAMPLE_CSV_FILE_PATH));
+		csvReader = new CSVReader(reader);
+		System.setProperty("webdriver.chrome.driver",
+				"C:\\Users\\ahoss1\\Desktop\\Parking_Calculator\\parking_calculator\\chromedriver\\chromedriver.exe");
+		driver = new ChromeDriver();
+		driver.navigate().to("http://adam.goucher.ca/parkcalc");
+		// Initialize Login Page
+		pageObjects = PageFactory.initElements(driver, PageObjects.class);
+
+	}
+	@Test(dataProvider = "getData")
+
+	public void LoginTest() throws InterruptedException {
+	pageObjects.EntryTime("07:00");
+	pageObjects.EntryDate("06/20/2019");
+	pageObjects.ExitTime("12:00");
+	pageObjects.ExitDate("06/21/2019");
+	pageObjects.Calculate();
+
+		
+	}
+	@DataProvider(name = "getData")
+	public Object[][] getData() throws Exception {
+
+		List<String[]> records = csvReader.readAll();
+
+		Object[][] array = null;
+
+		for (int i = 0; i < records.size(); i++) {
+
+			Object[] row = records.get(i);
+			if (Objects.isNull(array)) {
+				array = new Object[records.size()][row.length];
+			}
+			array[i][0] = row[0];
+			// System.out.println(array[i][column]);
+			array[i][1] = row[1];
+			// System.out.println(array[i][column]);
+
+		}
+		return array;
+
+	}
+	/*
+	 * @AfterClass public void afterTest() { // Close the browser driver.close();
+	 * driver.quit(); }
+	 */
+
+}

@@ -1,0 +1,79 @@
+package parking_calculator;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.FindBy;
+import org.openqa.selenium.support.How;
+import org.openqa.selenium.support.ui.Select;
+import org.openqa.selenium.support.ui.WebDriverWait;
+public class PageObjects {
+
+@FindBy(how = How.NAME, using = "Lot")
+private WebElement chooseLot;
+
+@FindBy(how = How.ID, using = "EntryDate")
+private WebElement entryDate;
+
+
+@FindBy(how = How.ID, using = "EntryTime")
+private WebElement entryTime;
+
+
+@FindBy(how = How.ID, using = "ExitDate")
+private WebElement leavingDate;
+
+@FindBy(how = How.ID, using = "ExitTime")
+private WebElement leavingTime;
+
+@FindBy(how = How.CSS, using = "EntryTimeAMPM:nth-child(2)")
+private WebElement entryTimeAM;
+
+@FindBy(how = How.CSS, using = "EntryTimeAMPM:nth-child(3)")
+private WebElement entryTimePM;
+
+@FindBy(how = How.CSS, using = "ExitTimeAMPM:nth-child(2)")
+private WebElement exitTimeAM;
+
+@FindBy(how = How.CSS, using = "ExitTimeAMPM:nth-child(2)")
+private WebElement exitTimePM;
+
+@FindBy(how = How.CSS, using = "input[name=\"Submit\"]")
+private WebElement calculate;
+@FindBy(how = How.CSS, using = "b")
+private WebElement getTxt;
+
+public void ChooseLot() throws InterruptedException {
+	Select chooseLotLongTerm=new Select(chooseLot);
+	chooseLotLongTerm.selectByVisibleText("Long-Term Surface Parking");
+}
+
+public void EntryTime(String time) throws InterruptedException {
+this.entryTime.clear();
+this.entryTime.sendKeys(time);
+}
+
+public void EntryDate(String date) throws InterruptedException {
+this.entryDate.clear();
+this.entryDate.sendKeys(date);
+}
+
+public void ExitTime(String time) throws InterruptedException {
+this.leavingTime.clear();
+this.leavingTime.sendKeys(time);
+}
+
+public void ExitDate(String date) throws InterruptedException {
+this.leavingDate.clear();
+this.leavingDate.sendKeys(date);
+}
+
+public void ClickLoginButton() {
+	wait.until(ExpectedConditions.elementToBeClickable(this.calculate));
+	calculate.click();
+}
+/*public void Calculate() throws InterruptedException {
+this.calculate.click();
+}*/
+public String GetText() throws InterruptedException {
+return this.getTxt.getText();
+
+}
+}
